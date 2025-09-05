@@ -24,7 +24,8 @@ void setup()
 {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED)
+  unsigned long start_time = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - start_time < 15000)
   {
     delay(500);
     Serial.print(".");
@@ -81,8 +82,8 @@ void sine_wave()
 {
   for (byte i = 0; i < leds_size; i++)
   {
-    float phase = (i + sine_step) * 0.4;
-    int sine_brightness = (sin(phase) + 1.0) * 511.5;
+    float phase = (i - sine_step) * 0.4;
+    int sine_brightness = (sin(phase) + 1.0) * (brightness / 2);
     ledcWrite(leds[i], sine_brightness);
   }
   sine_step++;
